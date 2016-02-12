@@ -11,7 +11,7 @@
 #include <time.h> // For struct timespec, clock_gettime, CLOCK_MONOTONIC
 #endif
 
-#define MAX_SPEED 9.6  // definning Trestles Max Gflops/s per node
+#define MAX_SPEED 346  // definning Trestles Max Gflops/s per node
 
 /* reference_dgemm wraps a call to the BLAS-3 routine DGEMM, via the standard FORTRAN interface - hence the reference semantics. */ 
 #define DGEMM dgemm_

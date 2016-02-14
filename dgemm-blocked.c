@@ -41,7 +41,6 @@ static void do_block (int lda, int M, int N, int K, double* A, double* B, double
     }
 }
 
-
 /* This routine performs a dgemm operation
  *  C := C + A * B
  * where A, B, and C are lda-by-lda matrices stored in column-major format. 

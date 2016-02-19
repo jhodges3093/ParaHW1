@@ -12,7 +12,7 @@ MKLROOT = /opt/apps/intel/15/composer_xe_2015.2.164/mkl
 LDLIBS = -lrt -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROOT)/lib/intel64/libmkl_sequential.a $(MKLROOT)/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -lm
 
 */
-
+#include <iostream>
 #include <Eigen/Dense>
 
 using namespace Eigen;
@@ -26,6 +26,10 @@ const char* dgemm_desc = "Naive, Matrix Multiply.";
  * On exit, A and B maintain their input values. */    
 void square_dgemm (int n, double* A, double* B, double* C)
 {
+  
+  MatrixXd AX;
+  MatrixXd BX;
+  MatrixXd CX;
   
   MatrixXd AX = Map<MatrixXd>( A, n, n );
   MatrixXd BX = Map<MatrixXd>( B, n, n );

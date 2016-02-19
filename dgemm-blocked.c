@@ -29,25 +29,71 @@ const char* dgemm_desc = "Simple blocked dgemm.";
 static void do_block (int lda, int M, int N, int K, double* A, double* B, double* C)
 {
   /* For each row i of A */
-  for (int i = 0; i < M; i+4)
+  for (int i = 0; i < M+3; i+4)
   {
     /* For each column j of B */ 
-    for (int j = 0; j < N; j+4) 
+    for (int j = 0; j < N+3; j+4) 
     {
+		
+		if(i > M || j > N)
+		{
+			double cij = C[i+j*lda];
+			double cijTwo = C[(i+1)+(j+1)*lda];
+			double cijThree = C[(i+2)+(j+2)*lda];
+			double cijFour = C[(i+3)+(j+3)*lda];
+			for (int k = 0; k < K; k+4)
+			{
+				cij += A[i+k*lda] * B[k+j*lda];
+				C[i+j*lda] = cij;
+		
+				if(i-1 > M && j-1 < N)
+				{
+					cijTwo += A[(i-1)+[k-1]*lda] * B[(k-1)+(j-1)*lda];
+					C[(i-1)+(j-1)*lda] = cijTwo;
+				}
+		
+				if(i-2 < M && j-2 < N)
+				{
+					cijThree += A[(i-2)+[k-2]*lda] * B[(k-2)+(j-2)*lda];
+					C[(i-2)+(j-2)*lda] = cijThree;
+				}
+		
+				if(i-3 < M && j-3 < N)
+				{
+					cijFour += A[(i-3)+[k-3]*lda] * B[(k-3)+(j-3)*lda];
+					C[(i-3)+(j-3)*lda] = cijFour;
+				}
+			}	
+		}
+		
       /* Compute C(i,j) */
       double cij = C[i+j*lda];
 	  double cijTwo = C[(i+1)+(j+1)*lda];
 	  double cijThree = C[(i+2)+(j+2)*lda];
 	  double cijFour = C[(i+3)+(j+3)*lda];
       for (int k = 0; k < K; k+4)
+	  {
 		cij += A[i+k*lda] * B[k+j*lda];
-		cijTwo += A[(i+1)+[k+1]*lda] * B[(k+1)+(j+1)*lda];
-		cijThree += A[(i+2)+[k+2]*lda] * B[(k+2)+(j+2)*lda];
-		cijFour += A[(i+3)+[k+3]*lda] * B[(k+3)+(j+3)*lda];
-      C[i+j*lda] = cij;
-	  C[(i+1)+(j+1)*lda] = cijTwo;
-	  C[(i+2)+(j+2)*lda] = cijThree;
-	  C[(i+3)+(j+3)*lda] = cijFour;
+		C[i+j*lda] = cij;
+		
+		if(i+1 < M && j+1 < N)
+		{
+			cijTwo += A[(i+1)+[k+1]*lda] * B[(k+1)+(j+1)*lda];
+			C[(i+1)+(j+1)*lda] = cijTwo;
+		}
+		
+		if(i+2 < M && j+2 < N)
+		{
+			cijThree += A[(i+2)+[k+2]*lda] * B[(k+2)+(j+2)*lda];
+			C[(i+2)+(j+2)*lda] = cijThree;
+		}
+		
+		if(i+3 < M && j+3 < N)
+		{
+			cijFour += A[(i+3)+[k+3]*lda] * B[(k+3)+(j+3)*lda];
+			C[(i+3)+(j+3)*lda] = cijFour;
+		}
+	  }
     }
   }
 }

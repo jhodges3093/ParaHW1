@@ -5,10 +5,10 @@ COMPILER= gnu
 
     Please include All compiler flags and libraries as you want them run. You can simply copy this over from the Makefile's first few lines
  
-CC = cc
-OPT = -O3
+CC = icc 
+OPT = -O3 -funroll-loops -ftree-vectorize-verbose
 CFLAGS = -Wall -std=gnu99 $(OPT)
-MKLROOT = /opt/intel/composer_xe_2013.1.117/mkl
+MKLROOT = /opt/apps/intel/15/composer_xe_2015.2.164/mkl
 LDLIBS = -lrt -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKLROOT)/lib/intel64/libmkl_sequential.a $(MKLROOT)/lib/intel64/libmkl_core.a -Wl,--end-group -lpthread -lm
 
 */
@@ -29,16 +29,27 @@ const char* dgemm_desc = "Simple blocked dgemm.";
 static void do_block (int lda, int M, int N, int K, double* A, double* B, double* C)
 {
   /* For each row i of A */
-  for (int i = 0; i < M; ++i)
+  for (int i = 0; i < M; i+4)
+  {
     /* For each column j of B */ 
-    for (int j = 0; j < N; ++j) 
+    for (int j = 0; j < N; j+4) 
     {
       /* Compute C(i,j) */
       double cij = C[i+j*lda];
-      for (int k = 0; k < K; ++k)
-	cij += A[i+k*lda] * B[k+j*lda];
+	  double cijTwo = C[(i+1)+(j+1)*lda];
+	  double cijThree = C[(i+2)+(j+2)*lda];
+	  double cijFour = C[(i+3)+(j+3)*lda];
+      for (int k = 0; k < K; k+4)
+		cij += A[i+k*lda] * B[k+j*lda];
+		cijTwo += A[(i+1)+[k+1]*lda] * B[(k+1)+(j+1)*lda];
+		cijThree += A[(i+2)+[k+2]*lda] * B[(k+2)+(j+2)*lda];
+		cijFour += A[(i+3)+[k+3]*lda] * B[(k+3)+(j+3)*lda];
       C[i+j*lda] = cij;
+	  C[(i+1)+(j+1)*lda] = cijTwo;
+	  C[(i+2)+(j+2)*lda] = cijThree;
+	  C[(i+3)+(j+3)*lda] = cijFour;
     }
+  }
 }
 
 /* This routine performs a dgemm operation

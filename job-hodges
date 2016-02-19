@@ -1,0 +1,11 @@
+#!/bin/bash
+#SBATCH --job-name=dgemm-hodges
+#SBATCH --output job-hodges.stdout
+#SBATCH --time=00:10:00
+#SBATCH --partition=development
+#SBATCH --account=TG-CCR140008
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+echo "Job Name (ID): "$SLURM_JOB_NAME" ("$SLURM_JOB_ID")"
+echo "Working directory: "$SLURM_SUBMIT_DIR
+./benchmark-hodges

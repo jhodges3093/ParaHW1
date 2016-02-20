@@ -13,7 +13,7 @@ LDLIBS = -lrt -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKL
 
 */
 #include <iostream>
-#include <Eigen/Dense>
+#include <~/ParaHW1/Eigen/Dense>
 
 using Eigen::MatrixXd;
 

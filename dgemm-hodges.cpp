@@ -15,8 +15,7 @@ LDLIBS = -lrt -Wl,--start-group $(MKLROOT)/lib/intel64/libmkl_intel_lp64.a $(MKL
 #include <iostream>
 #include <Eigen/Dense>
 
-using namespace Eigen;
-using namespace std;
+using Eigen::MatrixXd;
 
 const char* dgemm_desc = "Naive, Matrix Multiply.";
 

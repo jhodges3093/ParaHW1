@@ -8,4 +8,4 @@
 #SBATCH --ntasks-per-node=1
 echo "Job Name (ID): "$SLURM_JOB_NAME" ("$SLURM_JOB_ID")"
 echo "Working directory: "$SLURM_SUBMIT_DIR
-./benchmark-hodges
+./benchmark-naive
